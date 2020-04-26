@@ -8,6 +8,6 @@ module.exports = {
       useUTC: false // for reading from database
     },
     timezone: 'America/Chicago',
+    url: process.env.DATABASE_URL
   },
-  url: process.env.DATABASE_URL
 };
