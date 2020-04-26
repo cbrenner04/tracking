@@ -1,0 +1,30 @@
+<h1>Drinks</h1>
+<br />
+<p>
+  <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#drinks-form" aria-expanded="false" aria-controls="drinks-form">
+    Add more drinks
+  </button>
+</p>
+<div class="collapse" id="drinks-form">
+  <h2>Add more</h2>
+  <%- include('./partials/drinks-form.ejs', { query: '?historical=true' }) %>
+</div>
+<br />
+<br />
+<h2>Historical Data</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Drinks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% drinks.forEach(function(drink) { %>
+      <tr>
+        <th scope="row"><%= drink['date_trunc'] %></th>
+        <td><%= Number(drink['sum']).toFixed(3) %></td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
