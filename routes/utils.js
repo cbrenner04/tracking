@@ -18,7 +18,11 @@ function toLocalIsoString(date) {
   }`;
 };
 
+function standardDrinks(alcoholContent) {
+  return (Number(alcoholContent) / STANDARD_DRINK).toFixed(3);
+}
+
 module.exports = {
-  STANDARD_DRINK,
   toLocalIsoString,
+  standardDrinks,
 }

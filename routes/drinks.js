@@ -2,8 +2,9 @@ const { Router } = require('express');
 const router = Router();
 const { auth } = require('../middleware');
 const render = require('./render-helper');
-const { Drink, sequelize } = require('../database/models');
-const { STANDARD_DRINK, toLocalIsoString } = require('./utils');
+const { Drink } = require('../database/models');
+const { standardDrinks, toLocalIsoString } = require('./utils');
+const { allTimeDrinks } = require('./queries');
 
 /* POST drinks */
 router.post('/drinks', auth, async function(req, res, next) {
@@ -24,15 +25,9 @@ router.post('/drinks', auth, async function(req, res, next) {
 // GET drinks
 router.get('/drinks', auth, async function(req, res, next) {
   const { user } = req;
-  const [allDrinks] = await sequelize.query(`
-    SELECT DATE_TRUNC('day', date)::timestamp::date, SUM(alcohol_content)
-    FROM drinks
-    WHERE user_id=${user.id}
-    GROUP BY DATE_TRUNC('day', date)::timestamp::date
-    ORDER BY DATE_TRUNC('day', date)::timestamp::date DESC;
-  `);
+  const allDrinks = await allTimeDrinks(user.id);
   const drinks = allDrinks.map((drink) => {
-    const count = (Number(drink.sum) / STANDARD_DRINK).toFixed(3);
+    const count = standardDrinks(drink.sum);
     return {
       date: drink.date_trunc,
       count,

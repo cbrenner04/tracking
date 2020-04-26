@@ -2,33 +2,20 @@ const { Router } = require('express');
 const router = Router();
 const { auth } = require('../middleware');
 const render = require('./render-helper');
-const { sequelize } = require('../database/models');
-const { STANDARD_DRINK, toLocalIsoString } = require('./utils');
+const { toLocalIsoString, standardDrinks } = require('./utils');
+const { totalDrinksLast7Days, numberOfDaysSinceLastDry, allTimeDrinks } = require('./queries');
 
 /* GET home page. */
 router.get('/', auth, async function(req, res, next) {
   const { user } = req;
-  const [[{ sum }]] = await sequelize.query(`
-    SELECT SUM(alcohol_content)
-    FROM drinks
-    WHERE user_id=${user.id} AND date >= (CURRENT_DATE - integer '7');
-  `);
-  const totalDrinks = (Number(sum) / STANDARD_DRINK).toFixed(3)
-  const [[{ age: { days: daysSinceLastDry } }]] = await sequelize.query(`
-    SELECT AGE(CURRENT_DATE, (
-      SELECT *
-      FROM generate_series('2020-04-01', CURRENT_DATE - 1, INTERVAL '1 day') AS dates
-      WHERE dates NOT IN (
-        SELECT DISTINCT DATE_TRUNC('day', date)
-        FROM drinks
-        WHERE user_id=${user.id}
-      )
-      ORDER BY dates DESC
-      LIMIT 1
-    ));
-  `);
+  const totalLast7 = await totalDrinksLast7Days(user.id);
+  const totalDrinks = standardDrinks(totalLast7);
+  const daysSinceLastDry = await numberOfDaysSinceLastDry(user.id);
+  const allDrinks = await allTimeDrinks(user.id);
+  const { date_trunc: lastBingeDate } = allDrinks.find(({ sum }) => standardDrinks(sum) >= 5);
+  const daysSinceLastBinge = Math.floor((new Date() - new Date(lastBingeDate)) / (24 * 60 * 60 * 1000))
   const dateTime = toLocalIsoString(new Date());
-  render(res, 'home', { dateTime, totalDrinks, daysSinceLastDry, user });
+  render(res, 'home', { dateTime, totalDrinks, daysSinceLastDry, user, daysSinceLastBinge });
 });
 
 module.exports = router;
