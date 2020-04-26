@@ -37,8 +37,18 @@ async function allTimeDrinks(userId) {
   return allDrinks;
 }
 
+async function todaysDrinkTotal(userId) {
+  const [[{ sum }]] = await sequelize.query(`
+    SELECT SUM(alcohol_content)
+    FROM drinks
+    WHERE user_id=${userId} AND date > CURRENT_DATE - 1;
+  `);
+  return Number(sum).toFixed(3);
+}
+
 module.exports = {
   totalDrinksLast7Days,
   numberOfDaysSinceLastDry,
   allTimeDrinks,
+  todaysDrinkTotal,
 }
