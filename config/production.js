@@ -9,4 +9,5 @@ module.exports = {
     },
     timezone: 'America/Chicago',
   },
+  url: process.env.DATABASE_URL
 };
