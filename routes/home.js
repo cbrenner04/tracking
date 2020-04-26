@@ -1,9 +1,12 @@
 const { Router } = require('express');
-const router = Router();
+
 const { auth } = require('../middleware');
-const render = require('./render-helper');
-const { toLocalIsoString, standardDrinks } = require('./utils');
-const { totalDrinksLast7Days, numberOfDaysSinceLastDry, allTimeDrinks } = require('./queries');
+
+const render = require('./util/render');
+const { toLocalIsoString, standardDrinks } = require('./util/utils');
+const { totalDrinksLast7Days, numberOfDaysSinceLastDry, allTimeDrinks } = require('./util/queries');
+
+const router = Router();
 
 /* GET home page. */
 router.get('/', auth, async function(req, res, next) {

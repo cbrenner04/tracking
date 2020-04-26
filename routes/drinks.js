@@ -1,10 +1,13 @@
 const { Router } = require('express');
-const router = Router();
+
 const { auth } = require('../middleware');
-const render = require('./render-helper');
 const { Drink } = require('../database/models');
-const { standardDrinks, toLocalIsoString } = require('./utils');
-const { allTimeDrinks } = require('./queries');
+
+const render = require('./util/render');
+const { standardDrinks, toLocalIsoString } = require('./util/utils');
+const { allTimeDrinks } = require('./util/queries');
+
+const router = Router();
 
 /* POST drinks */
 router.post('/drinks', auth, async function(req, res, next) {

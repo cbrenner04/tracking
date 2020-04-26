@@ -1,4 +1,4 @@
-const { sequelize } = require('../database/models');
+const { sequelize } = require('../../database/models');
 
 async function totalDrinksLast7Days(userId) {
   const [[{ sum }]] = await sequelize.query(`
