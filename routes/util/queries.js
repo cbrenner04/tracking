@@ -41,7 +41,7 @@ async function todaysDrinkTotal(userId) {
   const [[{ sum }]] = await sequelize.query(`
     SELECT SUM(alcohol_content)
     FROM drinks
-    WHERE user_id=${userId} AND date > CURRENT_DATE;
+    WHERE user_id=${userId} AND date >= CURRENT_DATE;
   `);
   return Number(sum).toFixed(3);
 }

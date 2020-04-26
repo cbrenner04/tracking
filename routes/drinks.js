@@ -35,7 +35,7 @@ router.get('/drinks', auth, async function(req, res, next) {
       date: drink.date_trunc,
       count,
     };
-  })
+  });
   const dateTime = toLocalIsoString(new Date());
   render(res, 'drinks', { drinks, dateTime, user });
 });
