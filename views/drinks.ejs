@@ -22,8 +22,8 @@
   <tbody>
     <% drinks.forEach(function(drink) { %>
       <tr>
-        <th scope="row"><%= drink['date_trunc'] %></th>
-        <td><%= Number(drink['sum']).toFixed(3) %></td>
+        <th scope="row"><%= drink['date'] %></th>
+        <td><%= drink['count'] %></td>
       </tr>
     <% }) %>
   </tbody>

@@ -3,24 +3,7 @@ const router = Router();
 const { auth } = require('../middleware');
 const render = require('./render-helper');
 const { sequelize } = require('../database/models');
-
-function pad(n) {
-  return n < 10 ? '0' + n : n;
-};
-// https://stackoverflow.com/a/16177227
-function toLocalIsoString(date) {
-  return `${
-    date.getFullYear()
-  }-${
-    pad(date.getMonth() + 1)
-  }-${
-    pad(date.getDate())
-  }T${
-    pad(date.getHours())
-  }:${
-    pad(date.getMinutes())
-  }`;
-};
+const { STANDARD_DRINK, toLocalIsoString } = require('./utils');
 
 /* GET home page. */
 router.get('/', auth, async function(req, res, next) {
@@ -30,7 +13,7 @@ router.get('/', auth, async function(req, res, next) {
     FROM drinks
     WHERE user_id=${user.id} AND date >= (CURRENT_DATE - integer '7');
   `);
-  const totalDrinks = Number(sum).toFixed(3)
+  const totalDrinks = (Number(sum) / STANDARD_DRINK).toFixed(3)
   const [[{ age: { days: daysSinceLastDry } }]] = await sequelize.query(`
     SELECT AGE(CURRENT_DATE, (
       SELECT *
