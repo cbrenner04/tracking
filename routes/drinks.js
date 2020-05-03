@@ -5,7 +5,7 @@ const { Drink } = require('../database/models');
 
 const render = require('./util/render');
 const { standardDrinks, toLocalIsoString } = require('./util/utils');
-const { allTimeDrinks } = require('./util/queries');
+const { allTimeDrinks, oneDayDrinks } = require('./util/queries');
 
 const router = Router();
 
@@ -38,6 +38,31 @@ router.get('/drinks', auth, async function(req, res, next) {
   });
   const dateTime = toLocalIsoString(new Date());
   render(res, 'drinks', { drinks, dateTime, user });
+});
+
+// GET drinks/:date
+router.get('/drinks/:date', auth, async function (req, res, next) {
+  const { user } = req;
+  const { date } = req.params;
+  const returnedDrinks = await oneDayDrinks(user.id, date);
+  const drinks = returnedDrinks.map((drink) => {
+    const { id, date, alcohol_content: alcoholContent } = drink;
+    return {
+      id,
+      alcoholContent,
+      time: toLocalIsoString(date),
+    };
+  })
+  render(res, 'edit-drinks', { date, drinks, user });
+});
+
+// DELETE drinks/:date/:id
+router.delete('/drinks/:date/:id', auth, async function(req, res, next) {
+  const { user } = req;
+  const { date, id } = req.params;
+  const record = await Drink.findOne({ where: { user_id: user.id, id }});
+  record.destroy();
+  res.redirect(`/drinks/${date}`);
 });
 
 module.exports = router;

@@ -17,13 +17,15 @@
     <tr>
       <th scope="col">Date</th>
       <th scope="col">Drinks</th>
+      <th scope="col" />
     </tr>
   </thead>
   <tbody>
     <% drinks.forEach(function(drink) { %>
       <tr>
-        <th scope="row"><%= drink['date'] %></th>
-        <td><%= drink['count'] %></td>
+        <th scope="row"><%= drink.date %></th>
+        <td><%= drink.count %></td>
+        <td><a href="/drinks/<%= drink.date %>" class="btn btn-sm btn-link" style="line-height: 1;">Edit</a></td>
       </tr>
     <% }) %>
   </tbody>

@@ -6,6 +6,7 @@ const logger = require('morgan');
 const passport = require('passport');
 const session = require('express-session');
 const SessionStore = require('connect-pg-simple');
+const methodOverride = require('method-override');
 
 const router = require('./router');
 
@@ -32,7 +33,11 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Override with POST having ?_method=DELETE
+app.use(methodOverride('_method'));
+
 app.use(router);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

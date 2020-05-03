@@ -1,0 +1,29 @@
+<h1>Edit <%= date %></h1>
+<a href="/drinks" class="btn btn-link">Back</a>
+<br />
+<br />
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Time</th>
+      <th scope="col">Alcohol Content</th>
+      <th scope="col" />
+      <th scope="col" />
+    </tr>
+  </thead>
+  <tbody>
+    <% drinks.forEach(function({ id, alcoholContent, time }) { %>
+      <tr>
+        <th scope="row"><%= id %></th>
+        <td><%= time %></td>
+        <td><%= Number(alcoholContent).toFixed(3) %></td>
+        <td>
+          <form method="POST" action="/drinks/<%= date %>/<%= id %>?_method=DELETE">
+            <button type="submit" class="btn btn-sm btn-link" style="line-height: 1;">Delete</button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
