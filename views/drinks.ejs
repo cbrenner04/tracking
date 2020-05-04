@@ -12,6 +12,7 @@
 <br />
 <br />
 <h2>Historical Data</h2>
+<div id="history"></div>
 <table class="table">
   <thead>
     <tr>
@@ -30,3 +31,7 @@
     <% }) %>
   </tbody>
 </table>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+  Plotly.newPlot('history', JSON.parse('<%- plotData %>'), JSON.parse('<%- plotLayout %>'));
+</script>

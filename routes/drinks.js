@@ -37,7 +37,23 @@ router.get('/drinks', auth, async function(req, res, next) {
     };
   });
   const dateTime = toLocalIsoString(new Date());
-  render(res, 'drinks', { drinks, dateTime, user });
+  const plotLayout = JSON.stringify({
+    title: 'Number of drinks',
+    xaxis: {
+      title: 'Date'
+    },
+    yaxis: {
+      title: 'Number of drinks'
+    },
+  });
+  const plotData = JSON.stringify([{
+    x: allDrinks.map(drink => drink.date_trunc),
+    y: allDrinks.map(drink => standardDrinks(drink.sum)),
+    type: 'scatter',
+    mode: 'lines',
+    name: 'Drinks',
+  }]);
+  render(res, 'drinks', { drinks, dateTime, user, plotData, plotLayout });
 });
 
 // GET drinks/:date
