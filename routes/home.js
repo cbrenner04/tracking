@@ -19,7 +19,7 @@ router.get('/', auth, async function (req, res, next) {
     const lastBinge = allDrinks.find(({ sum }) => standardDrinks(sum) >= 5);
     let daysSinceLastBinge = null;
     if (lastBinge) {
-      const { date_trunc: lastBingeDate } = lastBinge;
+      const { date: lastBingeDate } = lastBinge;
       daysSinceLastBinge = Math.floor((new Date() - new Date(lastBingeDate)) / (24 * 60 * 60 * 1000));
     }
     const todaysTotal = standardDrinks(await todaysDrinkTotal(user.id));

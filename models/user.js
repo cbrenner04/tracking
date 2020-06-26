@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
       beforeSave: (user) => {
-        console.log('BEFORE SAVE')
         const salt = bcrypt.genSaltSync();
         user.password = bcrypt.hashSync(user.password, salt);
       },

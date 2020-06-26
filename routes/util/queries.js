@@ -75,7 +75,7 @@ async function moving7DayAvgDrinks(userId) {
 
 async function avgDrinks(userId) {
   const [[{ avg }]] = await sequelize.query(`
-    SELECT (SUM(alcohol_content) / (max(date + '1 days')::date - min(date)::date)) AS avg
+    SELECT ((SUM(alcohol_content) / 0.6) / (max(date + '1 days')::date - min(date)::date)) AS avg
     FROM drinks
     WHERE user_id = :userId;
   `, {
