@@ -57,6 +57,7 @@ router.get('/drinks', auth, async function (req, res, next) {
     yaxis: {
       title: 'Number of drinks',
     },
+    showlegend: false,
   });
   const plotData = JSON.stringify([
     {
