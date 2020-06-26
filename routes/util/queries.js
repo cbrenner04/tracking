@@ -34,19 +34,56 @@ async function numberOfDaysSinceLastDry(userId) {
   return days;
 }
 
-async function allTimeDrinks(userId) {
-  const [allDrinks] = await sequelize.query(`
-    SELECT DATE_TRUNC('day', date)::timestamp::date, SUM(alcohol_content)
+const allDrinksQuery = `
+  SELECT x.date, SUM(d.alcohol_content)
+  FROM (
+    SELECT generate_series(min(date), max(date + '1 day'), '1d')::date AS date
+    FROM drinks
+  ) x
+  LEFT JOIN (
+    SELECT DATE_TRUNC('day', date)::date AS date, alcohol_content, user_id
     FROM drinks
     WHERE user_id = :userId
-    GROUP BY DATE_TRUNC('day', date)::timestamp::date
-    ORDER BY DATE_TRUNC('day', date)::timestamp::date DESC;
-  `, {
+  ) d USING (date)
+  GROUP BY date
+  ORDER BY date DESC
+`;
+
+async function allTimeDrinks(userId) {
+  const [allDrinks] = await sequelize.query(allDrinksQuery, {
     replacements: {
       userId,
     },
   });
   return allDrinks;
+}
+
+async function moving7DayAvgDrinks(userId) {
+  const [moving7DayAvg] = await sequelize.query(`
+    SELECT
+      allDrinks.date,
+      AVG(allDrinks.sum)
+      OVER(ORDER BY allDrinks.date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW)
+    FROM (${allDrinksQuery}) AS allDrinks;
+  `, {
+    replacements: {
+      userId,
+    },
+  });
+  return moving7DayAvg;
+}
+
+async function avgDrinks(userId) {
+  const [[{ avg }]] = await sequelize.query(`
+    SELECT (SUM(alcohol_content) / (max(date + '1 days')::date - min(date)::date)) AS avg
+    FROM drinks
+    WHERE user_id = :userId;
+  `, {
+    replacements: {
+      userId,
+    },
+  });
+  return avg;
 }
 
 async function todaysDrinkTotal(userId) {
@@ -85,4 +122,6 @@ module.exports = {
   allTimeDrinks,
   todaysDrinkTotal,
   oneDayDrinks,
+  moving7DayAvgDrinks,
+  avgDrinks
 }

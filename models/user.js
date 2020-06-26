@@ -13,16 +13,19 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     hooks: {
-      beforeCreate: (user) => {
+      beforeSave: (user) => {
+        console.log('BEFORE SAVE')
         const salt = bcrypt.genSaltSync();
         user.password = bcrypt.hashSync(user.password, salt);
       },
     },
   });
-  user.associate = function(models) {
-    user.hasMany(models.Drink, { foreignKey: 'user_id' });
+  user.associate = function (models) {
+    user.hasMany(models.Drink, {
+      foreignKey: 'user_id'
+    });
   };
-  user.prototype.validPassword = function(suppliedPassword) {
+  user.prototype.validPassword = function (suppliedPassword) {
     return bcrypt.compareSync(suppliedPassword, this.password);
   }
   return user;

@@ -3,7 +3,9 @@
 <p><%= todaysTotal %> drinks today</p>
 <p><%= totalDrinks %> drinks in last 7 days</p>
 <p><%= daysSinceLastDry %> days since last dry day</p>
-<p><%= daysSinceLastBinge %> days since last binge</p>
+<% if (daysSinceLastBinge !== null) { %>
+  <p><%= daysSinceLastBinge %> days since last binge</p>
+<% } %>
 <br />
 <h2>Add more</h2>
 <%- include('./partials/drinks-form.ejs') %>
