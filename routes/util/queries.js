@@ -37,7 +37,7 @@ async function numberOfDaysSinceLastDry(userId) {
 const allDrinksQuery = `
   SELECT x.date, SUM(d.alcohol_content)
   FROM (
-    SELECT generate_series(min(date), max(date + '1 day'), '1d')::date AS date
+    SELECT generate_series(min(date), CURRENT_DATE, '1d')::date AS date
     FROM drinks
   ) x
   LEFT JOIN (
@@ -75,7 +75,7 @@ async function moving7DayAvgDrinks(userId) {
 
 async function avgDrinks(userId) {
   const [[{ avg }]] = await sequelize.query(`
-    SELECT ((SUM(alcohol_content) / 0.6) / (max(date + '1 days')::date - min(date)::date)) AS avg
+    SELECT ((SUM(alcohol_content) / 0.6) / (CURRENT_DATE - min(date)::date)) AS avg
     FROM drinks
     WHERE user_id = :userId;
   `, {
