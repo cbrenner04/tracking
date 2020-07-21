@@ -35,18 +35,18 @@ async function numberOfDaysSinceLastDry(userId) {
 }
 
 const allDrinksQuery = `
-  SELECT x.date, SUM(d.alcohol_content)
+  SELECT x.date, COALESCE(SUM(d.alcohol_content), 0) as sum
   FROM (
     SELECT generate_series(min(date), CURRENT_DATE, '1d')::date AS date
     FROM drinks
   ) x
   LEFT JOIN (
-    SELECT DATE_TRUNC('day', date)::date AS date, alcohol_content, user_id
+    SELECT DATE_TRUNC('day', timezone('america/chicago', date))::date AS date, alcohol_content, user_id
     FROM drinks
     WHERE user_id = :userId
   ) d USING (date)
-  GROUP BY date
-  ORDER BY date DESC
+  GROUP BY x.date
+  ORDER BY x.date DESC;
 `;
 
 async function allTimeDrinks(userId) {
