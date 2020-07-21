@@ -46,7 +46,7 @@ const allDrinksQuery = `
     WHERE user_id = :userId
   ) d USING (date)
   GROUP BY x.date
-  ORDER BY x.date DESC;
+  ORDER BY x.date DESC
 `;
 
 async function allTimeDrinks(userId) {
