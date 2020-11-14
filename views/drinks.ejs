@@ -34,5 +34,5 @@
 </table>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script>
-  Plotly.newPlot('history', JSON.parse('<%- plotData %>'), JSON.parse('<%- plotLayout %>'), { responsive: true });
+  Plotly.newPlot('history', JSON.parse('<%- plotData %>'), JSON.parse('<%- plotLayout %>'), { responsive: true, displayModeBar: false });
 </script>
