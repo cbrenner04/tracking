@@ -73,6 +73,21 @@ async function moving7DayAvgDrinks(userId) {
   return moving7DayAvg;
 }
 
+async function moving30DayAvgDrinks(userId) {
+  const [moving30DayAvg] = await sequelize.query(`
+    SELECT
+      allDrinks.date,
+      AVG(allDrinks.sum)
+      OVER(ORDER BY allDrinks.date ROWS BETWEEN 29 PRECEDING AND CURRENT ROW)
+    FROM (${allDrinksQuery}) AS allDrinks;
+  `, {
+    replacements: {
+      userId,
+    },
+  });
+  return moving30DayAvg;
+}
+
 async function avgDrinks(userId) {
   const [[{ avg }]] = await sequelize.query(`
     SELECT ((SUM(alcohol_content) / 0.6) / (CURRENT_DATE - min(date)::date)) AS avg
@@ -123,5 +138,6 @@ module.exports = {
   todaysDrinkTotal,
   oneDayDrinks,
   moving7DayAvgDrinks,
-  avgDrinks
+  moving30DayAvgDrinks,
+  avgDrinks,
 }

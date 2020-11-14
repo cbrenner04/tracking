@@ -5,7 +5,7 @@ const { Drink } = require('../database/models');
 
 const render = require('./util/render');
 const { standardDrinks, toLocalIsoString } = require('./util/utils');
-const { allTimeDrinks, oneDayDrinks, moving7DayAvgDrinks, avgDrinks } = require('./util/queries');
+const { allTimeDrinks, oneDayDrinks, moving7DayAvgDrinks, avgDrinks, moving30DayAvgDrinks } = require('./util/queries');
 
 const router = Router();
 
@@ -37,6 +37,7 @@ router.get('/drinks', auth, async function (req, res, next) {
   const { user } = req;
   const allDrinks = await allTimeDrinks(user.id);
   const movingAvgDrinks = await moving7DayAvgDrinks(user.id);
+  const movingMonthAvgDrinks = await moving30DayAvgDrinks(user.id);
   const averageDrinks = await avgDrinks(user.id);
   const drinks = allDrinks
     .map((drink) => {
@@ -73,6 +74,13 @@ router.get('/drinks', auth, async function (req, res, next) {
       type: 'scatter',
       mode: 'lines',
       name: '7 Day Average',
+    },
+    {
+      x: movingMonthAvgDrinks.map((drink) => drink.date),
+      y: movingMonthAvgDrinks.map((drink) => standardDrinks(drink.avg)),
+      type: 'scatter',
+      mode: 'lines',
+      name: '30 Day Average',
     },
     {
       x: allDrinks.map((drink) => drink.date),
