@@ -38,7 +38,7 @@ router.get('/drinks', auth, async function (req, res, next) {
   const allDrinks = await allTimeDrinks(user.id);
   const movingAvgDrinks = await moving7DayAvgDrinks(user.id);
   const movingMonthAvgDrinks = await moving30DayAvgDrinks(user.id);
-  const averageDrinks = await avgDrinks(user.id);
+  const averageDrinks = await avgDrinks(user.id).toFixed(3);
   const drinks = allDrinks
     .map((drink) => {
       const count = standardDrinks(drink.sum);
@@ -58,7 +58,7 @@ router.get('/drinks', auth, async function (req, res, next) {
     yaxis: {
       title: 'Number of drinks',
     },
-    showlegend: false,
+    showlegend: true,
   });
   const plotData = JSON.stringify([
     {
