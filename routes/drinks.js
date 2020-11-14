@@ -84,17 +84,6 @@ router.get('/drinks', auth, async function (req, res, next) {
     },
     {
       x: allDrinks.map((drink) => drink.date),
-      y: allDrinks.map(() => averageDrinks),
-      type: 'scatter',
-      mode: 'lines',
-      line: {
-        dash: 'dot',
-        width: 4,
-      },
-      name: 'Average',
-    },
-    {
-      x: allDrinks.map((drink) => drink.date),
       y: allDrinks.map(() => 2),
       type: 'scatter',
       mode: 'lines',
@@ -111,6 +100,7 @@ router.get('/drinks', auth, async function (req, res, next) {
     user,
     plotData,
     plotLayout,
+    averageDrinks,
   });
 });
 
