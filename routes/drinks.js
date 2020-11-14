@@ -59,6 +59,7 @@ router.get('/drinks', auth, async function (req, res, next) {
       title: 'Number of drinks',
     },
     showlegend: true,
+    legend: {"orientation": "h"}
   });
   const plotData = JSON.stringify([
     {
